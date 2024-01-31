@@ -1,0 +1,5 @@
+frontend:
+    themes: !include /config/themes/home-theme/home-theme.yaml
+    extra_module_url:
+      - /local/custom_resources/script.js
+      - /hacsfiles/lovelace-card-mod/card-mod.js

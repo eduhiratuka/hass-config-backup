@@ -1,0 +1,127 @@
+- id: '1704312252710'
+  alias: 'Quarto do Edu: Ar-condicionado: Alternar Estado'
+  description: ''
+  trigger:
+  - platform: event
+    event_type: ios.action_fired
+    event_data:
+      actionID: F97A501A-5110-4BA5-910C-4FD9B6572530
+    alias: Quando a ação “Ar-condicionado“ do IOs for acionada
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: climate.quarto_do_edu_ar_condicionado
+        state: 'off'
+        alias: Se o Ar-condicionado do Quarto do Edu estiver desligado
+      sequence:
+      - alias: Liga o Ar-condicionado do Quarto do Edu
+        service: climate.turn_on
+        target:
+          entity_id: climate.quarto_do_edu_ar_condicionado
+        data: {}
+      alias: Liga o Ar-condicionado do Quarto do Edu se ele estiver desligado
+    - conditions:
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: climate.quarto_do_edu_ar_condicionado
+          state: 'off'
+        alias: Se o Ar-condicionado do Quarto do Edu não estiver desligado
+      sequence:
+      - alias: Desliga o Ar-condicionado do Quarto do Edu
+        service: climate.turn_off
+        target:
+          entity_id: climate.quarto_do_edu_ar_condicionado
+        data: {}
+      alias: Desligar o Ar-condicionado do Quarto do Edu se estiver em qualquer outra
+        situação
+  mode: single
+- id: '1704316614257'
+  alias: 'Casa: Notificar Atividades'
+  description: ''
+  trigger:
+  - id: casa_notificar_atividades_state_trigger
+    platform: state
+    alias: Quando dispositivos selecionados mudarem de estado
+    entity_id:
+    - climate.quarto_do_edu_ar_condicionado
+    - person.eduardo_hiratuka
+    - light.quarto_do_edu_luz_de_cabeceira
+    - light.quarto_do_edu_luz_de_teto
+    - light.escritorio_luz_de_teto
+    - light.fundos_fita_de_led
+    - cover.frente_portao_da_garagem
+    - switch.quarto_do_edu_umidificador_potencia
+    from:
+    to:
+  - platform: state
+    entity_id:
+    - cover.frente_portao_da_garagem
+    from:
+    to:
+    id: casa_notificar_atividades_frente_portao_da_garagem_state_trigger
+    alias: Quando Portão da Garagem mudar de estado
+  - id: casa_notificar_atividades_hass_on_trigger
+    platform: homeassistant
+    event: start
+  - id: casa_notificar_atividades_hass_off_trigger
+    platform: homeassistant
+    event: shutdown
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - casa_notificar_atividades_state_trigger
+        alias: Se dispositivos selecionados mudaram de estado
+      sequence:
+      - service: telegram_bot.send_message
+        data:
+          title: '{{ trigger.from_state.name }}'
+          message: '{% from ''translator.jinja'' import format_state %} {{ format_state(trigger.from_state)
+            }} ➡️ {{ format_state(trigger.to_state) }}'
+        alias: Enviar notificação pelo Telegram
+      alias: Se dispositivos selecionados mudaram de estado, enviar notificação pelo
+        Telegram
+    - conditions:
+      - condition: trigger
+        id:
+        - casa_notificar_atividades_hass_off_trigger
+      sequence:
+      - service: telegram_bot.send_message
+        data:
+          title: '{{ "Home Assistant" }}'
+          message: '{{ "Home Assistant esta Desligando" }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - casa_notificar_atividades_hass_on_trigger
+      sequence:
+      - service: telegram_bot.send_message
+        data:
+          title: '{{ "Home Assistant" }}'
+          message: '{{ "Home Assistant esta Ligando" }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - casa_notificar_atividades_frente_portao_da_garagem_state_trigger
+        alias: Se Portão da Garagem mudou de estado
+      sequence:
+      - service: camera.record
+        target:
+          entity_id: camera.frente_camera_da_garagem
+        data:
+          duration: 10
+          filename: /config/www/records/frente_camera_da_garagem.mp4
+        alias: Gravar a Câmera da Garagem por 10seg.
+      - alias: Enviar o vídeo gravado pela Câmera da Garagem pelo Telegram
+        service: telegram_bot.send_video
+        data:
+          file: /config/www/records/frente_camera_da_garagem.mp4
+      alias: Se Portão da Garagem mudou de estado, gravar a Câmera da Garagem por
+        10seg. e enviá-lo pelo Telegram
+  mode: queued
+  max: 10

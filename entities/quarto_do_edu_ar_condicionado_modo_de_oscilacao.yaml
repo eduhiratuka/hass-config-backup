@@ -1,0 +1,42 @@
+  - select:
+    - name: "Quarto do Edu: Ar-condicionado: Modo de Oscilação"
+      unique_id: quarto_do_edu_ar_condicionado_modo_de_oscilacao
+      icon: >-
+        {% set modo_de_oscilacao = state_attr('climate.quarto_do_edu_ar_condicionado', 'swing_mode') %}
+        {% if (modo_de_oscilacao == 'VerticalOff'): %} mdi:arrow-oscillating-off
+        {% elif (modo_de_oscilacao == 'VerticalTop'): %} mdi:arrow-up
+        {% elif (modo_de_oscilacao == 'VerticalMiddleTop1'): %} mdi:arrow-right-top
+        {% elif (modo_de_oscilacao == 'VerticalMiddleTop2'): %} mdi:arrow-top-right
+        {% elif (modo_de_oscilacao == 'VerticalMiddleBottom2'): %} mdi:arrow-bottom-right
+        {% elif (modo_de_oscilacao == 'VerticalMiddleBottom1'): %} mdi:arrow-right-bottom
+        {% elif (modo_de_oscilacao == 'VerticalBottom'): %} mdi:arrow-down
+        {% elif (modo_de_oscilacao == 'VerticalSwing'): %} mdi:arrow-oscillating
+        {% endif %}
+      state: >-
+        {% set modo_de_oscilacao = state_attr('climate.quarto_do_edu_ar_condicionado', 'swing_mode') %}
+        {% if (modo_de_oscilacao == 'VerticalOff'): %} Desligado
+        {% elif (modo_de_oscilacao == 'VerticalTop'): %} Cima
+        {% elif (modo_de_oscilacao == 'VerticalMiddleTop1'): %} Meio Cima 1
+        {% elif (modo_de_oscilacao == 'VerticalMiddleTop2'): %} Meio Cima 2
+        {% elif (modo_de_oscilacao == 'VerticalMiddleBottom2'): %} Meio Baixo 2
+        {% elif (modo_de_oscilacao == 'VerticalMiddleBottom1'): %} Meio Baixo 1
+        {% elif (modo_de_oscilacao == 'VerticalBottom'): %} Baixo
+        {% elif (modo_de_oscilacao == 'VerticalSwing'): %} Automático
+        {% endif %}
+      options: "{{ ['Desligado', 'Cima', 'Meio Cima 1', 'Meio Cima 2', 'Meio Baixo 2', 'Meio Baixo 1', 'Baixo', 'Automático'] }}"
+      select_option:
+        - service: climate.set_swing_mode
+          target:
+            entity_id: climate.quarto_do_edu_ar_condicionado
+          data:
+            swing_mode: >-
+              {% if (option == 'Desligado'): %} VerticalOff
+              {% elif (option == 'Cima'): %} VerticalTop
+              {% elif (option == 'Meio Cima 1'): %} VerticalMiddleTop1
+              {% elif (option == 'Meio Cima 2'): %} VerticalMiddleTop2
+              {% elif (option == 'Meio Baixo 2'): %} VerticalMiddleBottom2
+              {% elif (option == 'Meio Baixo 1'): %} VerticalMiddleBottom1
+              {% elif (option == 'Baixo'): %} VerticalBottom
+              {% elif (option == 'Automático'): %} VerticalSwing
+              {% endif %}
+            

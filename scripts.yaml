@@ -1,0 +1,149 @@
+roaming_galaxy_do_edu_tocar_telefone:
+  alias: 'Roaming: Galaxy do Edu: Tocar Telefone'
+  sequence:
+  - service: notify.mobile_app_roaming_galaxy_do_edu
+    data:
+      message: Home Assistant
+      title: Home Assistant is searching your phone!
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream
+  icon: mdi:cellphone-sound
+  mode: single
+roaming_iphone_do_edu_tocar_telefone:
+  alias: 'Roaming: iPhone do Edu: Tocar Telefone'
+  sequence:
+  - service: notify.mobile_app_roaming_iphone_do_edu
+    data:
+      message: Home Assistant
+      title: Home Assistant is searching your phone!
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  icon: mdi:cellphone-sound
+  mode: single
+casa_tts_notificar:
+  alias: 'Casa: TTS: Notificar'
+  sequence:
+  - choose:
+    - alias: Se o destinatário for Echo Dot do Edu, notificar nele
+      conditions:
+      - condition: state
+        entity_id: input_select.casa_tts_destinatario
+        state: 'Quarto do Edu: Echo Dot'
+      sequence:
+      - service: notify.alexa_media
+        data:
+          data:
+            type: tts
+          target: media_player.quarto_do_edu_echo_dot
+          message: '{{ states(''input_text.casa_tts_texto'') }}'
+    - alias: Se o destinatário for Echo Show dos Fundos, notificar nele
+      conditions:
+      - condition: state
+        entity_id: input_select.casa_tts_destinatario
+        state: 'Fundos: Echo Show'
+      sequence:
+      - service: notify.alexa_media
+        data:
+          data:
+            type: tts
+          target: media_player.fundos_echo_show
+          message: '{{ states(''input_text.casa_tts_texto'') }}'
+    - alias: Se o destinatário for Computador do Edu, notificar nele
+      conditions:
+      - condition: state
+        entity_id: input_select.casa_tts_destinatario
+        state: 'Escritório: Computador do Edu'
+      sequence:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.escritorio_computador_do_edu
+          message: '{{ states(''input_text.casa_tts_texto'') }}'
+    - alias: Se o destinatário for Chromecast dos Fundos, notificar nele
+      conditions:
+      - condition: state
+        entity_id: input_select.casa_tts_destinatario
+        state: 'Fundos: Chromecast'
+      sequence:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.fundos_chromecast
+          message: '{{ states(''input_text.casa_tts_texto'') }}'
+    - alias: Se o destinatário for Múltiplos, notificar nos ativos
+      conditions:
+      - condition: state
+        entity_id: input_select.casa_tts_destinatario
+        state: Múltiplos
+      sequence:
+      - parallel:
+        - if:
+          - condition: state
+            entity_id: input_boolean.casa_tts_escritorio_computador_do_edu
+            state: 'on'
+          then:
+          - service: tts.cloud_say
+            data:
+              entity_id: media_player.escritorio_computador_do_edu
+              message: '{{ states(''input_text.casa_tts_texto'') }}'
+        - if:
+          - condition: state
+            entity_id: input_boolean.casa_tts_fundos_chromecast
+            state: 'on'
+          then:
+          - service: tts.cloud_say
+            data:
+              entity_id: media_player.fundos_chromecast
+              message: '{{ states(''input_text.casa_tts_texto'') }}'
+        - if:
+          - condition: state
+            entity_id: input_boolean.casa_tts_fundos_echo_show
+            state: 'on'
+          then:
+          - service: notify.alexa_media
+            data:
+              data:
+                type: tts
+              target: media_player.fundos_echo_show
+              message: '{{ states(''input_text.casa_tts_texto'') }}'
+        - if:
+          - condition: state
+            entity_id: input_boolean.casa_tts_quarto_do_edu_echo_dot
+            state: 'on'
+          then:
+          - service: notify.alexa_media
+            data:
+              data:
+                type: tts
+              target: media_player.quarto_do_edu_echo_dot
+              message: '{{ states(''input_text.casa_tts_texto'') }}'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 5
+      milliseconds: 0
+  - service: input_text.set_value
+    target:
+      entity_id: input_text.casa_tts_texto
+    data:
+      value: ''
+  mode: single
+  icon: mdi:speaker-message
+  fields: {}
+roaming_g9_play_da_ana_tocar_telefone:
+  alias: 'Roaming: G9 Play da Ana: Tocar Telefone'
+  sequence:
+  - service: notify.mobile_app_roaming_g9play_da_ana
+    data:
+      message: Home Assistant
+      title: Home Assistant is searching your phone!
+      data:
+        ttl: 0
+        priority: high
+        channel: alarm_stream
+  icon: mdi:cellphone-sound
+  mode: single

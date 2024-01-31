@@ -1,0 +1,8 @@
+{% macro format_battery_color(battery_level_entity, battery_state_entity) %}
+     red
+{% endmacro %}
+
+{% macro format_battery_text(battery_level_entity, battery_state_entity) %}
+    {{ states(battery_level_entity) }}%
+    {{ " - Carregando" if is_state(battery_state_entity, ['Charging', 'charging']) else "" }}
+{% endmacro %}

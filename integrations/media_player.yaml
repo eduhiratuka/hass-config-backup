@@ -1,0 +1,125 @@
+media_player:
+  - platform: template_media_player
+    media_players:
+        casa_altofalantes:
+            unique_id: casa_altofalantes
+            friendly_name: "Casa: Alto-falantes"
+            device_class: speaker
+            icon_template: mdi:speaker
+            global_template: >-
+                {% set source_helper = "input_text.casa_altofalantes_fonte_helper" %}
+                {% set source_list = ['Quarto do Edu: Echo Dot', 'Fundos: Echo Show'] %}
+                {% set source = "media_player." + state_attr('media_player.casa_altofalantes', 'source') | default("Quarto do Edu: Echo Dot") | slugify("_") %}
+            state_template: >-
+                {{ 'idle' if is_state(source, 'standby') else states(source) }}
+            attribute_templates:
+                source: >-
+                    {% if is_state(source_helper, source_list): %}
+                        {{ states(source_helper) }}
+                    {% else: %}
+                        {{ "Quarto do Edu: Echo Dot" }}
+                    {% endif %}
+                shuffle: >-
+                    {{ state_attr(source, attribute) }}
+                volume_level: >-
+                    {{ state_attr(source, attribute) }}
+                is_volume_muted: >-
+                    {{ state_attr(source, attribute) }}
+                media_title: >-
+                    {{ state_attr(source, attribute) }}
+                media_artist: >- 
+                    {{ state_attr(source, attribute) }}
+                media_album_name: >- 
+                    {{ state_attr(source, attribute) }}
+                media_content_type: >- 
+                    {{ state_attr(source, attribute) }}
+                entity_picture_local: >- 
+                    {{ state_attr(source, attribute) }}
+                entity_picture: >- 
+                    {{ state_attr(source, attribute) }}
+            service_scripts:
+                media_previous_track:
+                  - service: media_player.media_previous_track
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+                media_play:
+                  - service: script.casa_altofalantes_tocar_musica
+                    data:
+                        dispositivo: media_player.quarto_do_edu_echo_dot
+                media_pause:
+                  - service: script.casa_altofalantes_tocar_musica
+                    data:
+                        dispositivo: media_player.quarto_do_edu_echo_dot
+                media_next_track:
+                  - service: media_player.media_next_track
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+                shuffle_set:
+                  - service: media_player.shuffle_set
+                    data:
+                        shuffle: >-
+                            {{ shuffle }}
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+                volume_down:
+                  - service: media_player.volume_down
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+                volume_mute:
+                  - service: media_player.volume_mute
+                    data:
+                        is_volume_muted: >-
+                            {{ mute }}
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+                volume_set:
+                  - service: media_player.volume_set
+                    data:
+                        volume_level: >-
+                            {{ volume }}
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+                volume_up:
+                  - service: media_player.volume_up
+                    target:
+                        entity_id: media_player.quarto_do_edu_echo_dot
+            source_scripts:
+                "Quarto do Edu: Echo Dot":
+                  - service: input_text.set_value
+                    target:
+                        entity_id: input_text.casa_altofalantes_fonte_helper
+                    data:
+                        value: >-
+                            {{ 'Quarto do Edu: Echo Dot' }}
+                "Fundos: Echo Show":
+                  - service: input_text.set_value
+                    target:
+                        entity_id: input_text.casa_altofalantes_fonte_helper
+                    data:
+                        value: >-
+                            {{ 'Fundos: Echo Show' }}
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        

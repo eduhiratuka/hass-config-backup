@@ -1,0 +1,15 @@
+  - number:
+    - name: "Quarto do Edu: Ar-condicionado: Temperatura Alvo"
+      unique_id: quarto_do_edu_ar_condicionado_temperatura_alvo
+      icon: mdi:home-thermometer
+      state: >-
+        {{ state_attr('climate.quarto_do_edu_ar_condicionado', 'temperature') }}
+      set_value:
+        - service: climate.set_temperature
+          target:
+            entity_id: climate.quarto_do_edu_ar_condicionado
+          data:
+            temperature: "{{ value }}"
+      step: 1
+      min: 16
+      max: 30

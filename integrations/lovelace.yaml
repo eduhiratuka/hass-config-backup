@@ -1,0 +1,41 @@
+lovelace:
+  mode: storage
+
+  # Add yaml dashboards
+  dashboards:
+    test-lab:
+      mode: yaml
+      title: Test LAB
+      icon: mdi:script
+      show_in_sidebar: true
+      filename: /config/lovelace/dashboards/teste-lab.yaml
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      

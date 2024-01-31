@@ -1,0 +1,26 @@
+  - trigger:
+    - platform: event
+      event_type: casa_cameras_destaque_alterado
+    - platform: event
+      event_type: event_template_reloaded
+    - platform: homeassistant
+      event: start
+    select:
+    - name: "Casa: Cameras: Destaque Atual"
+      unique_id: casa_cameras_destaque_atual
+      state: >-
+          {%- if trigger.platform == "homeassistant": -%}
+              {{ 'Frente: Câmera da Garagem' }}
+          {%- else: -%}
+              {%- if trigger.event.event_type == "casa_cameras_destaque_alterado": -%}
+                {{ trigger.event.data.camera }}
+              {%- elif trigger.event.event_type == "event_template_reloaded": -%}
+                {{ 'Frente: Câmera da Garagem' }}
+              {%- endif -%}
+          {%- endif -%}
+      options: "{{ states | selectattr('domain', 'eq', 'camera') | sort(attribute='object_id') | map(attribute='name') | list }}"
+      select_option:
+        - event: casa_cameras_destaque_alterado
+          event_data:
+              camera: "{{ option }}"
+

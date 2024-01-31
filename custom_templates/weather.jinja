@@ -1,0 +1,55 @@
+{%- macro format_weather(entity, day, attributevar) -%}
+
+{% if day is none: %}
+  {% set entity_state = states(entity) %}
+{% else: %}
+  {% set entity_state = state_attr(entity, 'forecast')[day]['condition'] %}
+{% endif %}
+
+{% if attributevar in ['icon', 'name'] %}
+    {%- set weather_map = [
+        {"condition": "cloudy", "icon": "mdi:weather-cloudy", "name": "Nublado"},
+        {"condition": "fog", "icon": "mdi:weather-fog", "name": "Nevoeiro"},
+        {"condition": "hail", "icon": "mdi:weather-hail", "name": "Granizo"},
+        {"condition": "lightning", "icon": "mdi:weather-lightning", "name": "Relâmpagos"},
+        {"condition": "lightning-rainy", "icon": "mdi:weather-lightning-rainy", "name": "Chuvoso com raios"},
+        {"condition": "partlycloudy", "icon": "mdi:weather-partly-cloudy", "name": "Parcialmente nublado"},
+        {"condition": "pouring", "icon": "mdi:weather-pouring", "name": "Torrencial"},
+        {"condition": "rainy", "icon": "mdi:weather-rainy", "name": "Chuvoso"},
+        {"condition": "snowy", "icon": "mdi:weather-snowy", "name": "Nevado"},
+        {"condition": "snowy-rainy", "icon": "mdi:weather-snowy-rainy", "name": "Chuvoso com neve"},
+        {"condition": "sunny", "icon": "mdi:weather-sunny", "name": "Ensolarado"},
+        {"condition": "windy", "icon": "mdi:weather-windy", "name": "Ventania"},
+        {"condition": "windy-variant", "icon": "mdi:weather-windy-variant", "name": "Ventania"},
+        {"condition": "excepcional", "icon": "mdi:weather-excepcional", "name": "Excepcional"},
+        {"condition": "clear-night", "icon": "mdi:weather-night", "name": "Noite Clara"}]
+    -%}
+    {{
+        weather_map | 
+        selectattr("condition", "eq", entity_state) | 
+        map(attribute=attributevar) | 
+        first
+    }}
+{% endif %}
+{%- endmacro -%}
+
+{% macro format_weather_day(index) %}
+    {% set dia = (state_attr('weather.servicos_previsao_do_tempo_casa', 'forecast')[index]["datetime"] | as_datetime).weekday() %}
+    {% if dia == 0 %}
+        Seg.
+    {% elif dia == 1 %}
+        Ter.
+    {% elif dia == 2 %}
+        Qua.
+    {% elif dia == 3 %}
+        Qui.
+    {% elif dia == 4 %}
+        Sex.
+    {% elif dia == 5 %}
+        Sáb.
+    {% elif dia == 6 %}
+        Dom.
+    {% else %}
+        {{ dia }}
+    {% endif %}
+{% endmacro %}

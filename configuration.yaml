@@ -1,0 +1,4 @@
+homeassistant:
+    packages: !include_dir_named integrations
+    
+wake_on_lan:
