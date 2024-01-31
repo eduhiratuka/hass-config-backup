@@ -1,0 +1,71 @@
+generic_status_template:
+  default:
+    - entity: null
+    - name: null
+    - icon: none
+    - state_map:
+        - state: 'on'
+          name: Ligado
+          color: primary
+          icon: mdi:power-plug
+        - state: 'off'
+          name: Desligado
+          color: disabled
+          icon: mdi:power-plug-off
+    - color_mode: state_map
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-template-card
+    state_map: '[[state_map]]'
+    primary: '[[name]]'
+    secondary: |
+      {{
+        config.state_map | 
+        selectattr('state', 'eq', states('[[entity]]')) | 
+        map(attribute="name") | 
+        first 
+      }}
+    icon: |
+      {% set default_icon = '[[icon]]' %}
+      {% if default_icon != 'none' %}
+        {{ default_icon }}
+      {% else %}
+        {{
+          config.state_map | 
+          selectattr('state', 'eq', states('[[entity]]')) | 
+          map(attribute="icon") | 
+          first 
+        }}
+      {% endif %}
+    icon_color: |
+      {% if '[[color_mode]]' == 'state_map' %}
+        {{
+          config.state_map | 
+          selectattr('state', 'eq', states('[[entity]]')) | 
+          map(attribute="color") | 
+          first 
+        }}
+      {% endif %}
+    card_mod:
+      class: >-
+        generic_status ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+      style:
+        mushroom-shape-icon$: |
+          {% if '[[color_mode]]' == 'rgb' %}
+              {% set entity = '[[entity]]' %}
+              {% set rgb = state_attr(entity, "rgb_color") %}
+              
+              {% if states(entity) in ['on'] %}
+                  .shape {
+                    --shape-color: rgba({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }}, 0.2) !important;
+                    --icon-color: rgb({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }});
+                  }
+              {% else %}
+                  .shape {
+                    --shape-color: rgba(var(--rgb-disabled), 0.2) !important;
+                    --icon-color: rgb(var(--rgb-disabled));
+                  }
+              {% endif %}
+          {% endif %}

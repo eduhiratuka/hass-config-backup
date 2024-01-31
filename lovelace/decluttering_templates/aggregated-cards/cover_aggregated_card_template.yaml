@@ -1,0 +1,62 @@
+cover_aggregated_card_template:
+  default:
+    - cover_entity: null
+    - cover_name: null
+    - state_map:
+        - state: open
+          name: Aberto
+          icon: mdi:garage-open-variant
+          color: primary
+        - state: closed
+          name: Fechado
+          icon: mdi:garage-variant
+          color: disabled
+  card:
+    type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: 50% 50%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "cover-status cover-status"
+        "cover-open cover-close"
+    cards:
+      - type: custom:decluttering-card
+        template: generic_status_template
+        variables:
+          - entity: '[[cover_entity]]'
+          - name: '[[cover_name]]'
+          - state_map: '[[state_map]]'
+          - ghost_border: top
+        view_layout:
+          grid-area: cover-status
+      - type: custom:decluttering-card
+        template: generic_action_template
+        variables:
+          - action_entity: '[[cover_entity]]'
+          - action_state: open
+          - action_icon: mdi:arrow-up
+          - action_color: disabled
+          - action_command:
+              action: call-service
+              service: cover.open_cover
+              target:
+                entity_id: '[[cover_entity]]'
+          - disable_when: active
+          - ghost_border: bottom_left
+          - ghost_padding: top0
+      - type: custom:decluttering-card
+        template: generic_action_template
+        variables:
+          - action_entity: '[[cover_entity]]'
+          - action_state: closed
+          - action_icon: mdi:arrow-down
+          - action_color: disabled
+          - action_command:
+              action: call-service
+              service: cover.close_cover
+              target:
+                entity_id: '[[cover_entity]]'
+          - disable_when: active
+          - ghost_border: bottom_right
+          - ghost_padding: top0

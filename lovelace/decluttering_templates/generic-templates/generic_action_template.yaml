@@ -1,0 +1,68 @@
+generic_action_template:
+  default:
+    - action_entity: null
+    - action_state: null
+    - action_color: null
+    - action_icon: mdi:home-assistant
+    - action_command:
+        action: none
+    - disable_when: never
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-template-card
+    primary: ''
+    secondary: ''
+    icon: '[[action_icon]]'
+    icon_color: |
+      {% if is_state('[[action_entity]]', '[[action_state]]') %}
+        [[action_color]]
+      {% endif %}
+    layout: horizontal
+    tap_action: '[[action_command]]'
+    card_mod:
+      class: >-
+        generic_action ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+      style:
+        mushroom-shape-icon$: |
+          :host {
+            --icon-border-radius: 12px
+          }
+          .shape {
+            width: 100% !important;
+          }
+        mushroom-card$: |
+          .container {
+            flex-direction: column !important;
+          }
+        mushroom-state-item$: |
+          .container {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+        .: >
+          {% set disabled = false %}
+
+          {% set disabled_when = '[[disable_when]]' %}
+
+          {% if disabled_when == 'always' %}
+            {% set disabled = true %}
+          {% elif disabled_when == 'active' and is_state('[[action_entity]]',
+          '[[action_state]]') %}
+            {% set disabled = true %}
+          {% elif disabled_when == 'inactive' and not
+          is_state('[[action_entity]]', '[[action_state]]') %}
+            {% set disabled = true %}
+          {% endif %}
+
+
+          ha-card mushroom-state-item {
+            {% if disabled %}
+              pointer-events: none;
+            {% endif %}
+          }
+
+          ha-card mushroom-shape-icon {
+            --icon-color: var(--primary-text-color)
+          }

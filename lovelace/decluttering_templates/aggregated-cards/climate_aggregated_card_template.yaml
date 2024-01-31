@@ -1,0 +1,176 @@
+
+climate_aggregated_card_template:
+  default:
+    - climate_entity: null
+    - climate_name: null
+    - target_temperature_entity: null
+    - swing_mode_entity: null
+    - fan_mode_entity: null
+    - state_map:
+        - state: auto
+          name: Automático
+          color: green
+        - state: cool
+          name: Resfriar
+          color: blue
+        - state: dry
+          name: Desumidificar
+          color: orange
+        - state: fan_only
+          name: Ventilar
+          color: teal
+        - state: 'off'
+          name: Desligado
+          color: disabled
+  card:
+    type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: 50% 50%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "climate-status climate-temperatura"
+        "climate-direcao climate-velocidade"
+        "climate-controller climate-controller"
+    cards:
+      - type: custom:decluttering-card
+        template: generic_status_template
+        variables:
+          - entity: '[[climate_entity]]'
+          - name: '[[climate_name]]'
+          - icon: phu:air-conditioner
+          - state_map: '[[state_map]]'
+          - ghost_border: top_left
+        view_layout:
+          grid-area: climate-status
+      - type: custom:decluttering-card
+        template: generic_number_buttons_template
+        variables:
+          - number_entity: '[[target_temperature_entity]]'
+          - state_entity: '[[climate_entity]]'
+          - state_map: '[[state_map]]'
+          - ghost_border: top_right
+        view_layout:
+          grid-area: climate-temperatura
+      - type: custom:decluttering-card
+        template: generic_select_template
+        variables:
+          - select_entity: '[[swing_mode_entity]]'
+          - state_entity: '[[climate_entity]]'
+          - state_map: '[[state_map]]'
+          - ghost_border: middle_left
+          - ghost_padding: top0
+        view_layout:
+          grid-area: climate-direcao
+      - type: custom:decluttering-card
+        template: generic_select_template
+        variables:
+          - select_entity: '[[fan_mode_entity]]'
+          - state_entity: '[[climate_entity]]'
+          - state_map: '[[state_map]]'
+          - ghost_border: middle_right
+          - ghost_padding: top0
+        view_layout:
+          grid-area: climate-velocidade
+      - type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-template-columns: 1fr 1fr 1fr 1fr 1fr
+          grid-template-rows: auto
+          grid-template-areas: >
+            "controller-auto controller-cool controller-dry
+            controller-fan_only controller-off"
+          margin: 0
+        cards:
+          - type: custom:decluttering-card
+            template: generic_action_template
+            variables:
+              - action_entity: '[[climate_entity]]'
+              - action_state: auto
+              - action_icon: mdi:calendar-sync
+              - action_color: green
+              - action_command:
+                  action: call-service
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: '[[climate_entity]]'
+                  data:
+                    hvac_mode: auto
+              - ghost_border: bottom_left
+              - ghost_padding: top0
+            view_layout:
+              grid-area: controller-auto
+          - type: custom:decluttering-card
+            template: generic_action_template
+            variables:
+              - action_entity: '[[climate_entity]]'
+              - action_state: cool
+              - action_icon: mdi:snowflake
+              - action_color: blue
+              - action_command:
+                  action: call-service
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: '[[climate_entity]]'
+                  data:
+                    hvac_mode: cool
+              - ghost_border: bottom_center
+              - ghost_padding: top0
+            view_layout:
+              grid-area: controller-cool
+          - type: custom:decluttering-card
+            template: generic_action_template
+            variables:
+              - action_entity: '[[climate_entity]]'
+              - action_state: dry
+              - action_icon: mdi:water-percent
+              - action_color: orange
+              - action_command:
+                  action: call-service
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: '[[climate_entity]]'
+                  data:
+                    hvac_mode: dry
+              - ghost_border: bottom_center
+              - ghost_padding: top0
+            view_layout:
+              grid-area: controller-dry
+          - type: custom:decluttering-card
+            template: generic_action_template
+            variables:
+              - action_entity: '[[climate_entity]]'
+              - action_state: fan_only
+              - action_icon: mdi:fan
+              - action_color: teal
+              - action_command:
+                  action: call-service
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: '[[climate_entity]]'
+                  data:
+                    hvac_mode: fan_only
+              - ghost_border: bottom_center
+              - ghost_padding: top0
+            view_layout:
+              grid-area: controller-fan_only
+          - type: custom:decluttering-card
+            template: generic_action_template
+            variables:
+              - action_entity: '[[climate_entity]]'
+              - action_state: 'off'
+              - action_icon: mdi:power
+              - action_color: disabled
+              - action_command:
+                  action: call-service
+                  service: climate.set_hvac_mode
+                  target:
+                    entity_id: '[[climate_entity]]'
+                  data:
+                    hvac_mode: 'off'
+              - ghost_border: bottom_right
+              - ghost_padding: top0
+            view_layout:
+              grid-area: controller-off
+        view_layout:
+          grid-area: climate-controller

@@ -1,0 +1,76 @@
+generic_number_buttons_template:
+  default:
+    - number_entity: null
+    - state_entity: null
+    - state_map:
+        - state: 'on'
+          name: Ligado
+          color: primary
+          icon: mdi:power-plug
+        - state: 'off'
+          name: Desligado
+          color: disabled
+          icon: mdi:power-plug-off
+    - color_mode: state_map
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-number-card
+    entity: '[[number_entity]]'
+    primary_info: none
+    secondary_info: none
+    layout: horizontal
+    display_mode: buttons
+    tap_action:
+      action: none
+    state_map: '[[state_map]]'
+    card_mod:
+      class: >-
+        generic_number ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+      style:
+        mushroom-shape-icon$: |
+          {% if '[[color_mode]]' == 'rgb' %}
+              {% set entity = '[[state_entity]]' %}
+              {% set rgb = state_attr(entity, "rgb_color") %}
+              
+              {% if states(entity) in ['on'] %}
+                  .shape {
+                    --shape-color: rgba({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }}, 0.2) !important;
+                    --icon-color: rgb({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }});
+                  }
+              {% else %}
+                  .shape {
+                    --shape-color: rgba(var(--rgb-disabled), 0.2) !important;
+                    --icon-color: rgb(var(--rgb-disabled));
+                  }
+              {% endif %}
+          {% elif '[[color_mode]]' == 'state_map' %}
+              {% set color = config.state_map | selectattr('state', 'eq', states('[[state_entity]]')) | map(attribute="color") | first %}
+              {% set color = color + "-color" if color in ['primary', 'accent'] else color %}
+              .shape {
+                  --shape-color: rgba(var(--rgb-{{ color }}), 0.2) !important;
+                  --icon-color: rgb(var(--rgb-{{ color }}));
+              }
+          {% endif %}
+        .: |
+          mushroom-state-item {
+            cursor: default;
+            pointer-events: none;
+          }
+          mushroom-badge-icon {
+            display: none;
+          }
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+generic_select_template:
+  default:
+    - select_entity: null
+    - state_entity: null
+    - state_map: null
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-select-card
+    entity: '[[select_entity]]'
+    primary_info: none
+    secondary_info: none
+    layout: horizontal
+    tap_action:
+      action: none
+    state_map: '[[state_map]]'
+    card_mod:
+      class: >-
+        generic_select ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+      style:
+        mushroom-shape-icon$: |
+          {% set color = config.state_map |
+            selectattr('state', 'eq', states('[[state_entity]]')) |
+            map(attribute="color") |
+            first
+          %}
+
+          .shape {
+              --shape-color: rgba(var(--rgb-{{ color }}), 0.2) !important;
+          }
+        .: |
+          {% set color = config.state_map |
+            selectattr('state', 'eq', states('[[state_entity]]')) |
+            map(attribute="color") |
+            first
+          %}
+
+          mushroom-state-item {
+            cursor: default;
+            pointer-events: none;
+          }
+          ha-state-icon {
+              color: rgb(var(--rgb-{{ color }}));
+          }

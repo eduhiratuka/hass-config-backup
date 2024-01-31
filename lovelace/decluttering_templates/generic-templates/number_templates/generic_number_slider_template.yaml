@@ -1,0 +1,116 @@
+generic_number_slider_template:
+  default:
+    - number_entity: null
+    - state_entity: null
+    - state_map:
+        - state: 'on'
+          name: Ligado
+          color: primary
+          icon: mdi:power-plug
+        - state: 'off'
+          name: Desligado
+          color: disabled
+          icon: mdi:power-plug-off
+    - color_mode: state_map
+    - slider_mode: default # default, rgb, gradient
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-number-card
+    entity: '[[number_entity]]'
+    primary_info: none
+    secondary_info: none
+    layout: horizontal
+    display_mode: slider
+    tap_action:
+      action: none
+    state_map: '[[state_map]]'
+    card_mod:
+      class: >-
+        generic_number_slider ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+      style:
+        mushroom-shape-icon$: |
+          {% if '[[color_mode]]' == 'rgb' %}
+              {% set entity = '[[state_entity]]' %}
+              {% set rgb = state_attr(entity, "rgb_color") %}
+              
+              {% if states(entity) in ['on'] %}
+                  .shape {
+                    --shape-color: rgba({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }}, 0.2) !important;
+                    --icon-color: rgb({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }});
+                  }
+              {% else %}
+                  .shape {
+                    --shape-color: rgba(var(--rgb-disabled), 0.2) !important;
+                    --icon-color: rgb(var(--rgb-disabled));
+                  }
+              {% endif %}
+          {% elif '[[color_mode]]' == 'state_map' %}
+              {% set color = config.state_map | selectattr('state', 'eq', states('[[state_entity]]')) | map(attribute="color") | first %}
+              {% set color = color + "-color" if color in ['primary', 'accent'] else color %}
+              .shape {
+                  --shape-color: rgba(var(--rgb-{{ color }}), 0.2) !important;
+                  --icon-color: rgb(var(--rgb-{{ color }}));
+              }
+          {% endif %}
+        mushroom-number-value-control$: |
+          mushroom-slider {
+              {% if '[[slider_mode]]' == 'default' %}  
+                  {% if '[[color_mode]]' == 'rgb' %}
+                      {% set entity = '[[state_entity]]' %}
+                      {% set rgb = state_attr(entity, "rgb_color") %}
+                          --bg-color: rgba({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }}, 0.2) !important;
+                          --main-color: rgb({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }}) !important;
+                  {% elif '[[color_mode]]' == 'state_map' %}
+                      {% set color = config.state_map | selectattr('state', 'eq', states('[[state_entity]]')) | map(attribute="color") | first %}
+                      {% set color = color + "-color" if color in ['primary', 'accent'] else color %}
+                          --bg-color: rgba(var(--rgb-{{ color }}), 0.2) !important;
+                          --main-color: rgb(var(--rgb-{{ color }})) !important;
+                  {% endif %}
+              {% elif '[[slider_mode]]' == 'gradient' %} 
+                  --gradient: -webkit-linear-gradient(right, rgb(255, 160, 0) 0%, white 100%);
+              {% elif '[[slider_mode]]' == 'rgb' %} 
+                  --gradient: -webkit-linear-gradient(left, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%)
+              {% endif %}
+          }
+        mushroom-number-value-control$ mushroom-slider$: |
+            {% if '[[slider_mode]]' in ['gradient', 'rgb'] %} 
+                .container .slider .slider-track-active {
+                    bottom: 0px;
+                    border-radius: 3px;
+                    background-color: white;
+                    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px;
+                    left: calc(var(--value, 0) * (100% - 10px));
+                    width: 10px;
+                    transition: left 180ms ease-in-out 0s;
+                    transform: none;
+                }
+                .container .slider .slider-track-active::after {
+                    display: block;
+                    content: "";
+                    background-color: var(--main-color);
+                    position: absolute;
+                    inset: 0px;
+                    margin: auto;
+                    height: 20px;
+                    width: 2px;
+                    border-radius: 1px;
+                }
+            {% endif %}
+        .: |
+          mushroom-state-item {
+            cursor: default;
+            pointer-events: none;
+          }
+          mushroom-badge-icon {
+            display: none;
+          }
+
+
+
+
+
+
+
+

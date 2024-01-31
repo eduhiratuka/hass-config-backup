@@ -1,0 +1,22 @@
+  - number:
+    - name: "Quarto do Edu: Luz de Cabeceira: Temperatura"
+      unique_id: quarto_do_edu_luz_de_cabeceira_temperatura
+      icon: mdi:thermometer
+      state: >-
+          {% set entity = "light.quarto_do_edu_luz_de_cabeceira" %}
+          {{ state_attr(entity, 'color_temp') | int - state_attr(entity, "min_mireds") | int }}
+      set_value:
+        - service: light.turn_on
+          target:
+            entity_id: light.quarto_do_edu_luz_de_cabeceira
+          data:
+            color_temp: >-
+              {% set entity = "light.quarto_do_edu_luz_de_cabeceira" %}
+              {{ value | int + state_attr(entity, "min_mireds") | int }}
+      step: 1 
+      min: >-
+        {% set entity = "light.quarto_do_edu_luz_de_cabeceira" %}
+        {{ state_attr(entity, "min_mireds") | int - state_attr(entity, "min_mireds") | int }}
+      max: >-
+        {% set entity = "light.quarto_do_edu_luz_de_cabeceira" %}
+        {{ state_attr(entity, "max_mireds") | int - state_attr(entity, "min_mireds") | int }}
