@@ -2,12 +2,23 @@ id: 'testes_autoload'
 alias: "Testes: Autoload"
 description: ''
 trigger:
-  - platform: event
+  - alias: Quando houver alguma modificação em arquivas na pasta de automações
+    id: automations_folder_watcher_event_trigger
+    platform: event
     event_type: folder_watcher
+    event_data:
+      event_type: closed
+      folder: /config/automations
 action:
-  - service: automation.reload
-  - alias: Enviar notificação pelo Telegram
-    service: telegram_bot.send_message
-    data:
-      title: 'Automação Atualizada'
-      message: "{{ trigger.event.data.folder }}"
+- choose:
+  - conditions:
+    - condition: trigger 
+      id:
+      - automations_folder_watcher_event_trigger
+    sequence:
+    - service: automation.reload
+    - service: telegram_bot.send_message
+      data:
+        title: 'Automação Atualizada'
+        message: "{{ trigger.event.data.folder }}"
+  

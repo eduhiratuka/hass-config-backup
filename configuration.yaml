@@ -1,7 +1,6 @@
 homeassistant:
     packages: !include_dir_named integrations
     allowlist_external_dirs:
-        - /config/automations
-        - /config/themes
-        - /config/entities
-        - /config/entities
+        - "/config/automations"
+        - "/config/themes"
+        - "/config/entities"

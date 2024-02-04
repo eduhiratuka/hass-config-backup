@@ -2,7 +2,7 @@ generic_status_template2:
   default:
     # Parâmetros Principais
     - status_entity: null
-    - name: '{{ state_attr(entity, ''friendly_name'') }}'
+    - status_name: '{{ state_attr(entity, ''friendly_name'') }}'
     - action:
         action: more-info
 
@@ -30,9 +30,10 @@ generic_status_template2:
     type: custom:mushroom-template-card
     entity: '[[status_entity]]'
     state_map: '[[state_map]]'
+    state_entity: '[[state_entity]]'
     primary: '[[status_name]]'
     secondary: >
-      {% set selected_state = config.state_map | selectattr('state', 'eq', states([[state_entity]])) | first %}
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
       
       {% set contents = [] %}
       {% if 'contents' in selected_state %}
@@ -56,7 +57,7 @@ generic_status_template2:
         {% endif %}
       {% endfor %}
     icon: >
-      {% set selected_state = config.state_map | selectattr('state', 'eq', states([[state_entity]])) | first %}
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
 
       {% set icon = state_attr(entity, 'icon') %}
       {% if 'icon' in selected_state %}
@@ -65,7 +66,22 @@ generic_status_template2:
 
       {{ icon }}
     icon_color: >
-      {{ config.state_map |  selectattr('state', 'eq', states([[state_entity]])) |  map(attribute="icon_color") |  first }}
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+      {% set token_colors = [
+          'disabled', 'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 
+          'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 
+          'deep-orange', 'brown', 'light-grey', 'grey', 'dark-grey', 'blue-grey', 'black', 'white'
+      ] %}
+
+      {% if 'icon_color' in selected_state %}
+        {% if selected_state.icon_color in ['primary', 'accent'] %}
+          {% set icon_color = selected_state.icon_color %}
+        {% elif selected_state.icon_color in token_colors %}
+          {% set icon_color = selected_state.icon_color %}
+        {% endif %}
+
+        {{ icon_color }}
+      {% endif %}
     layout: default
     tap_action: '[[action]]'
     card_mod:

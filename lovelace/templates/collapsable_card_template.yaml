@@ -44,7 +44,7 @@ collapsable_card_template:
           - status_name: '[[main_card_name]]'
           - state_map: '[[state_map]]'
           - ghost_border: left
-          - extra_classes: collapsable_status collapsable_card
+          - extra_classes: collapsable_status collapsable_card show
         view_layout:
           grid-area: main_card
 
@@ -63,7 +63,7 @@ collapsable_card_template:
             - state: 'off'
               icon: mdi:chevron-right
           - ghost_border: right
-          - extra_classes: collapsable_button collapsable_card
+          - extra_classes: collapsable_button collapsable_card show
 
 
 

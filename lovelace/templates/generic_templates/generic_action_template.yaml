@@ -30,6 +30,7 @@ generic_action_template2:
     type: custom:mushroom-template-card
     entity: '[[action_entity]]'
     state_map: '[[state_map]]'
+    state_entity: '[[state_entity]]'
     primary: ''
     secondary: ''
     icon: >
@@ -42,7 +43,22 @@ generic_action_template2:
 
       {{ icon }}
     icon_color: >
-      {{ config.state_map |  selectattr('state', 'eq', states(entity)) |  map(attribute="icon_color") |  first }}
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+      {% set token_colors = [
+          'disabled', 'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 
+          'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 
+          'deep-orange', 'brown', 'light-grey', 'grey', 'dark-grey', 'blue-grey', 'black', 'white'
+      ] %}
+
+      {% if 'icon_color' in selected_state %}
+        {% if selected_state.icon_color in ['primary', 'accent'] %}
+          {% set icon_color = selected_state.icon_color %}
+        {% elif selected_state.icon_color in token_colors %}
+          {% set icon_color = selected_state.icon_color %}
+        {% endif %}
+
+        {{ icon_color }}
+      {% endif %}
     layout: horizontal
     tap_action: '[[action]]'
     card_mod:

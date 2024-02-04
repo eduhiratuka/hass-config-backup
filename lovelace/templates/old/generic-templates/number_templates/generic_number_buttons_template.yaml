@@ -36,7 +36,7 @@ generic_number_buttons_template:
               {% set entity = '[[state_entity]]' %}
               {% set rgb = state_attr(entity, "rgb_color") %}
               
-              {% if states(entity) in ['on'] %}
+              {% if states(config.entity) in ['on'] %}
                   .shape {
                     --shape-color: rgba({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }}, 0.2) !important;
                     --icon-color: rgb({{ rgb[0] }}, {{ rgb[1] }}, {{ rgb[2] }});

@@ -204,11 +204,6 @@ Home Theme:
         border-top-right-radius: 0;
       }
 
-      ha-card.ghost_card_left.collapsable_card.show {
-        border-bottom: 0;
-        border-bottom-left-radius: 0;
-      }
-
       ha-card.ghost_card_center {
         border-right: 0;
         border-bottom-right-radius: 0;
@@ -225,8 +220,26 @@ Home Theme:
         border-top-left-radius: 0;
       }
 
-      ha-card.ghost_card_right.collapsable_card.show {
+      /** 
+       ***************************************************
+       * Collapsable Card Template
+       * - Remove a borda e o arredondamento do card, de acordo com sua posição
+       * - As posições são:
+       *    top, top_left, top_center, top_right
+       *    middle, middle_left, middle_center, middle_right
+       *    bottom, bottom_left, bottom_center, bottom_right
+       *    none, left, center, right
+       ***************************************************
+      **/
+      ha-card.collapsable_card.collapsable_button.show {
         border-bottom: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      ha-card.collapsable_card.collapsable_status.show {
+        border-bottom: 0;
+        border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
       }
 

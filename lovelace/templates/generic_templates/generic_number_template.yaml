@@ -30,6 +30,7 @@ generic_number_template2:
     type: custom:mushroom-number-card
     entity: '[[number_entity]]'
     state_map: '[[state_map]]'
+    state_entity: '[[state_entity]]'
     primary_info: none
     secondary_info: none
     layout: horizontal
@@ -42,7 +43,7 @@ generic_number_template2:
         [[extra_classes]]
       style:
         mushroom-shape-icon$: |
-          {% set selected_state = config.state_map | selectattr('state', 'eq', states([[state_entity]])) | first %}
+          {% set selected_state = config.state_map | selectattr('state', 'eq', states(config.state_entity)) | first %}
           {% set token_colors = [
               'disabled', 'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 
               'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 
@@ -65,7 +66,7 @@ generic_number_template2:
         # Altera a cor do slider de acordo as variáveis
         mushroom-number-value-control$: |
           {% if '[[slider_mode]]' == 'default' %}
-            {% set selected_state = config.state_map | selectattr('state', 'eq', states([[state_entity]])) | first %}
+            {% set selected_state = config.state_map | selectattr('state', 'eq', states(config.state_entity)) | first %}
             {% set token_colors = [
                 'disabled', 'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 
                 'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 

@@ -26,16 +26,14 @@ action:
 - choose:
   - conditions:
     - condition: trigger
-      id:
+      id:  
       - casa_notificar_atividades_state_trigger
-      alias: Se dispositivos selecionados mudaram de estado
     sequence:
     - service: telegram_bot.send_message
       data:
-        title: '{{ trigger.from_state.name }}'
+        title: '{{ trigger.from_state.entity_id }}'
         message: '{% from ''translator.jinja'' import format_state %} {{ format_state(trigger.from_state)
           }} ➡️ {{ format_state(trigger.to_state) }}'
-      alias: Enviar notificação pelo Telegram
     alias: Se dispositivos selecionados mudaram de estado, enviar notificação pelo
       Telegram
   - conditions:
