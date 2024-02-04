@@ -42,18 +42,10 @@
   alias: 'Casa: Notificar Atividades'
   description: ''
   trigger:
-  - id: casa_notificar_atividades_state_trigger
+  - alias: Quando dispositivos selecionados mudarem de estado
+    id: casa_notificar_atividades_state_trigger
     platform: state
-    alias: Quando dispositivos selecionados mudarem de estado
-    entity_id:
-    - climate.quarto_do_edu_ar_condicionado
-    - person.eduardo_hiratuka
-    - light.quarto_do_edu_luz_de_cabeceira
-    - light.quarto_do_edu_luz_de_teto
-    - light.escritorio_luz_de_teto
-    - light.fundos_fita_de_led
-    - cover.frente_portao_da_garagem
-    - switch.quarto_do_edu_umidificador_potencia
+    entity_id: []
     from:
     to:
   - platform: state

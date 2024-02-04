@@ -42,6 +42,7 @@ generic_action_template:
             align-items: stretch !important;
           }
         .: >
+          {{ config }}
           {% set disabled = false %}
 
           {% set disabled_when = '[[disable_when]]' %}

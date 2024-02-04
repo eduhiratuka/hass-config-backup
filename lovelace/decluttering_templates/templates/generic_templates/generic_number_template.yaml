@@ -1,0 +1,100 @@
+generic_number_template2:
+  default:
+    # Parâmetros Principais
+    - number_entity: null
+    - slider_mode: default # default | gradient | rgb
+    - action:
+        action: none
+
+    # Parâmetros do Mapeamento de Estado
+    - state_entity: null
+    - state_map:
+      - state: 'on'
+        state_friendly: 'Ligado'
+        contents:
+          - state
+        icon: mdi:power-plug
+        icon_color: primary
+      - state: 'off'
+        state_friendly: 'Desligado'
+        contents:
+          - state
+        icon: mdi:power-plug-off
+        icon_color: disabled
+
+    # Parâmetros de Estilização
+    - extra_classes: extra_classes_none
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-number-card
+    entity: '[[number_entity]]'
+    state_map: '[[state_map]]'
+    primary_info: none
+    secondary_info: none
+    layout: horizontal
+    display_mode: slider
+    tap_action: '[[action]]'
+    card_mod:
+      class: >-
+        ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+        [[extra_classes]]
+      style:
+        mushroom-shape-icon$: |
+          {% set selected_state = config.state_map | selectattr('state', 'eq', states('[[state_entity]]')) | first %}
+          {% set token_colors = [
+              'disabled', 'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 
+              'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 
+              'deep-orange', 'brown', 'light-grey', 'grey', 'dark-grey', 'blue-grey', 'black', 'white'
+          ] %}
+
+          {% if 'icon_color' in selected_state %}
+            {% if selected_state.icon_color in ['primary', 'accent'] %}
+              {% set icon_color = "var(--rgb-" + selected_state.icon_color + "-color" %}
+            {% elif selected_state.icon_color in token_colors %}
+              {% set icon_color = "var(--rgb-" + selected_state.icon_color %}
+            {% endif %}
+
+            .shape {
+                --shape-color: rgba({{ icon_color }}), 0.2);
+                --icon-color: rgb({{ icon_color }}));
+            }
+          {% endif %}
+
+        # Altera a cor do slider de acordo as variáveis
+        mushroom-number-value-control$: |
+          {% if '[[slider_mode]]' == 'default' %}
+            {% set selected_state = config.state_map | selectattr('state', 'eq', states('[[state_entity]]')) | first %}
+            {% set token_colors = [
+                'disabled', 'red', 'pink', 'purple', 'deep-purple', 'indigo', 'blue', 'light-blue', 
+                'cyan', 'teal', 'green', 'light-green', 'lime', 'yellow', 'amber', 'orange', 
+                'deep-orange', 'brown', 'light-grey', 'grey', 'dark-grey', 'blue-grey', 'black', 'white'
+            ] %}
+
+            {% if 'icon_color' in selected_state %}
+              {% if selected_state.icon_color in ['primary', 'accent'] %}
+                {% set icon_color = "var(--rgb-" + selected_state.icon_color + "-color" %}
+              {% elif selected_state.icon_color in token_colors %}
+                {% set icon_color = "var(--rgb-" + selected_state.icon_color %}
+              {% endif %}
+
+
+              mushroom-slider {
+                  --slider-bg-color: rgba({{ icon_color }}), 0.2);
+                  --slider-color: rgb({{ icon_color }}));
+              }
+            {% endif %}
+          {% elif '[[slider_mode]]' == 'gradient' %} 
+              --gradient: -webkit-linear-gradient(right, rgb(255, 160, 0) 0%, white 100%);
+          {% elif '[[slider_mode]]' == 'rgb' %} 
+              --gradient: -webkit-linear-gradient(left, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%)
+          {% endif %}
+        .: |
+          mushroom-state-item {
+            cursor: default;
+            pointer-events: none;
+          }
+          mushroom-badge-icon {
+            display: none;
+          }

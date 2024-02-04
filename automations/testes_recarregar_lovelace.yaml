@@ -1,0 +1,70 @@
+alias: "Testes: Recarregar Lovelace"
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.escritorio_computador_do_edu_chrome_browser_path
+      - sensor.roaming_iphone_do_edu_app_browser_path
+    from: null
+    to: /test-lab/new-2-0
+condition: []
+action:
+  - service: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.lovelace_luz_de_cabeceira
+  - service: browser_mod.javascript
+    metadata: {}
+    data:
+      code: |
+        console.log("Executando JS");
+
+        const layout = document.querySelector("body > home-assistant")
+          .shadowRoot.querySelector("home-assistant-main")
+          .shadowRoot.querySelector("ha-drawer > partial-panel-resolver > ha-panel-lovelace")
+          .shadowRoot.querySelector("hui-root")
+          .shadowRoot.querySelector("#view > hui-view > grid-layout")
+          .shadowRoot.querySelector("#root > decluttering-card")
+          .shadowRoot.querySelector("#declutter-child")
+          .shadowRoot.querySelector("grid-layout");
+
+        const collapsable_container = layout
+          .shadowRoot.querySelector("#root > mod-card")
+          .shadowRoot.querySelector("ha-card");
+
+        const collapsable_button = layout
+          .shadowRoot.querySelector("#root > mushroom-template-card")
+          .shadowRoot.querySelector("ha-card");
+
+        const collapsable_status = layout
+          .shadowRoot.querySelector("#root > decluttering-card")
+          .shadowRoot.querySelector("#root > mushroom-template-card")
+          .shadowRoot.querySelector("ha-card");
+
+        console.log("collapsable_button: ");
+        console.log(collapsable_button);
+
+        console.log("collapsable_container: ");
+        console.log(collapsable_container);
+
+        console.log("collapsable_status: ");
+        console.log(collapsable_status);
+
+        if (!collapsable_button.classList.contains("keydown-handler")) {
+            console.log("Adicionando evento de click");
+            
+            collapsable_button.addEventListener("click", (event) => {
+              console.log("Clicou!");
+              collapsable_container.classList.toggle("show")
+              collapsable_button.classList.toggle("show")
+              collapsable_status.classList.toggle("show")
+            })
+            collapsable_button.classList.add("keydown-handler");
+            collapsable_container.classList.add("show")
+
+            console.log("Adicionado evento de click");
+        } else {
+          console.log("Ja foi adicionado evento de click");
+        }
+mode: single

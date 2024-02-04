@@ -47,6 +47,7 @@ climate_aggregated_card_template:
         template: generic_number_buttons_template
         variables:
           - number_entity: '[[target_temperature_entity]]'
+          - icon: mdi:thermometer
           - state_entity: '[[climate_entity]]'
           - state_map: '[[state_map]]'
           - ghost_border: top_right

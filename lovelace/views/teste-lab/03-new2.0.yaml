@@ -1,0 +1,62 @@
+# ==================================================
+# |  ____   ____    _    ____  _____ ____ ____     |
+# | |  _ \ / ___|  / \  / ___|| ____/ ___|  _ \   |
+# | | | | | |     / _ \ \___ \|  _| \___ \ | | |  |
+# | | |_| | |___ / ___ \ ___) | |___ ___) | |_| | |
+# | |____/ \____/_/   \_\____/|_____|____/|____/  |
+# |                                               |
+# | Versão 2.0 do Painel de Testes               |
+# ==================================================
+# Aqui começa a seção do código para a Versão 2.0 do Painel de Testes
+
+title: New 2.0
+path: new-2-0
+icon: mdi:surround-sound-2-0
+badges: []
+type: custom:grid-layout
+layout:
+  grid-template-columns: 33% auto 33%
+  grid-template-rows: auto
+  grid-template-areas: |
+    "welcome frente fundos"
+    "welcome quarto-do-edu escritorio"
+  mediaquery:
+    "(max-width: 870px)":
+      grid-template-columns: 100%
+      grid-template-rows: auto
+      grid-template-areas: |
+        "welcome"
+        "frente"
+        "fundos"
+        "quarto-do-edu"
+        "escritorio"       
+cards:
+  - type: custom:decluttering-card
+    template: collapsable_card_template
+    variables:
+      - main_card_entity: light.quarto_do_edu_luz_de_cabeceira
+      - main_card_name: Cabeceira
+      - state_map:
+        - state: 'on'
+          state_friendly: 'Ligado'
+          icon: mdi:lamp
+          icon_color: accent
+        - state: 'off'
+          state_friendly: 'Desligado'
+          icon: mdi:lamp
+          icon_color: disabled
+      - collapsable_cards:
+          - type: custom:decluttering-card
+            template: generic_number_template2
+            variables:
+              - number_entity: number.quarto_do_edu_luz_de_cabeceira_temperatura
+              - state_entity: light.quarto_do_edu_luz_de_cabeceira
+              - state_map:
+                - state: 'on'
+                  icon_color: accent
+                - state: 'off'
+                  icon_color: blue
+              - ghost_border: bottom
+              - ghost_padding: top0
+    view_layout:
+      grid-area: welcome

@@ -75,8 +75,15 @@ generic_number_slider_template:
               {% endif %}
           }
         mushroom-number-value-control$ mushroom-slider$: |
-            {% if '[[slider_mode]]' in ['gradient', 'rgb'] %} 
-                .container .slider .slider-track-active {
+            {% if '[[slider_mode]]' in ['gradient', 'rgb'] %}
+                .container.inactive {
+                  cursor: not-allowed;
+                }
+                .container.inactive .slider {
+                  pointer-events: none;
+                }
+
+                .container:not(.inactive) .slider .slider-track-active {
                     bottom: 0px;
                     border-radius: 3px;
                     background-color: white;
@@ -86,7 +93,7 @@ generic_number_slider_template:
                     transition: left 180ms ease-in-out 0s;
                     transform: none;
                 }
-                .container .slider .slider-track-active::after {
+                .container:not(.inactive) .slider .slider-track-active::after {
                     display: block;
                     content: "";
                     background-color: var(--main-color);

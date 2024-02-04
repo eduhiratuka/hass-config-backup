@@ -17,6 +17,7 @@ generic_status_template:
     - ghost_padding: none
   card:
     type: custom:mushroom-template-card
+    entity: '[[entity]]'
     state_map: '[[state_map]]'
     primary: '[[name]]'
     secondary: |
@@ -47,6 +48,8 @@ generic_status_template:
           first 
         }}
       {% endif %}
+    tap_action:
+      action: more-info
     card_mod:
       class: >-
         generic_status ghost_card_[[ghost_border]]

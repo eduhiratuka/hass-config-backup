@@ -1,6 +1,7 @@
 generic_number_buttons_template:
   default:
     - number_entity: null
+    - icon: null
     - state_entity: null
     - state_map:
         - state: 'on'
@@ -19,6 +20,7 @@ generic_number_buttons_template:
     entity: '[[number_entity]]'
     primary_info: none
     secondary_info: none
+    icon: '[[icon]]'
     layout: horizontal
     display_mode: buttons
     tap_action:

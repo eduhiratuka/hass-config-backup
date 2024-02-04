@@ -3,13 +3,21 @@
       unique_id: quarto_do_edu_luz_de_teto_temperatura
       icon: mdi:thermometer
       state: >-
-          {{ state_attr('light.quarto_do_edu_luz_de_teto', 'color_temp') }}
+          {% set numero = state_attr('light.quarto_do_edu_luz_de_teto', 'color_temp') | int %}
+          {% set lim_inferior = 153 %}
+          {% set lim_superior = 500 %}
+          {% set porcentagem = ((numero - lim_inferior) / (lim_superior - lim_inferior)) * 100 | float %}
+          {{ "%0.2f" | format(porcentagem | float) }}
       set_value:
         - service: light.turn_on
           target:
             entity_id: light.quarto_do_edu_luz_de_teto
           data:
-            color_temp: '{{ value }}'
+            color_temp: >-
+              {% set lim_inferior = 153 %}
+              {% set lim_superior = 500 %}
+              {%- set retorno = lim_inferior + (value * (lim_superior - lim_inferior)/100) %}
+              {{ retorno }}
       step: 5
       min: 0
-      max: 500
+      max: 100

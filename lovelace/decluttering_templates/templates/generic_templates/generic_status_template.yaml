@@ -1,0 +1,73 @@
+generic_status_template2:
+  default:
+    # Parâmetros Principais
+    - entity: null
+    - name: '{{ state_attr(entity, ''friendly_name'') }}'
+    - action:
+        action: more-info
+
+    # Parâmetros do Mapeamento de Estado
+    - state_map:
+      - state: 'on'
+        state_friendly: 'Ligado'
+        contents:
+          - state
+        icon: mdi:power-plug
+        icon_color: primary
+      - state: 'off'
+        state_friendly: 'Desligado'
+        contents:
+          - state
+        icon: mdi:power-plug-off
+        icon_color: disabled
+
+    # Parâmetros de Estilização
+    - extra_classes: extra_classes_none
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-template-card
+    entity: '[[entity]]'
+    state_map: '[[state_map]]'
+    primary: '[[name]]'
+    secondary: >
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+      
+      {% set contents = [] %}
+      {% if 'contents' in selected_state %}
+        {% set contents = selected_state.contents %}
+      {% endif %}
+
+      {% if contents | length == 0 %}
+        {% set contents = ['state'] %}
+      {% endif %}
+
+      {% for content in contents %}
+        {% if content == 'state' and 'state_friendly' in selected_state %}
+          {{ selected_state.state_friendly }}
+        {% elif content == 'state' %}
+          {{ states(entity) }}
+        {% else %}
+          {{ state_attr(entity, content) }}
+        {% endif %}
+        {% if not loop.last %}
+          {{ " - " }}
+        {% endif %}
+      {% endfor %}
+    icon: >
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+
+      {% set icon = state_attr(entity, 'icon') %}
+      {% if 'icon' in selected_state %}
+        {% set icon = selected_state.icon %}
+      {% endif %}
+
+      {{ icon }}
+    icon_color: >
+      {{ config.state_map |  selectattr('state', 'eq', states(entity)) |  map(attribute="icon_color") |  first }}
+    tap_action: '[[action]]'
+    card_mod:
+      class: >-
+        ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+        [[extra_classes]]
