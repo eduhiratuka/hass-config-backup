@@ -1,0 +1,73 @@
+generic_action_template2:
+  default:
+    # Parâmetros Principais
+    - action_entity: null
+
+    - action:
+        action: none
+
+    # Parâmetros do Mapeamento de Estado
+    - state_entity: config.entity
+    - state_map:
+      - state: 'on'
+        state_friendly: 'Ligado'
+        contents:
+          - state
+        icon: mdi:power-plug
+        icon_color: primary
+      - state: 'off'
+        state_friendly: 'Desligado'
+        contents:
+          - state
+        icon: mdi:power-plug-off
+        icon_color: disabled
+
+    # Parâmetros de Estilização
+    - extra_classes: extra_classes_none
+    - ghost_border: none
+    - ghost_padding: none
+  card:
+    type: custom:mushroom-template-card
+    entity: '[[action_entity]]'
+    state_map: '[[state_map]]'
+    primary: ''
+    secondary: ''
+    icon: >
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+
+      {% set icon = state_attr(entity, 'icon') %}
+      {% if 'icon' in selected_state %}
+        {% set icon = selected_state.icon %}
+      {% endif %}
+
+      {{ icon }}
+    icon_color: >
+      {{ config.state_map |  selectattr('state', 'eq', states(entity)) |  map(attribute="icon_color") |  first }}
+    layout: horizontal
+    tap_action: '[[action]]'
+    card_mod:
+      class: >-
+        ghost_card_[[ghost_border]]
+        ghost_padding_[[ghost_padding]]
+        [[extra_classes]]
+      style:
+        mushroom-shape-icon$: |
+          :host {
+            --icon-border-radius: 12px
+          }
+          .shape {
+            width: 100% !important;
+          }
+        mushroom-card$: |
+          .container {
+            flex-direction: column !important;
+          }
+        mushroom-state-item$: |
+          .container {
+            flex-direction: column !important;
+            align-items: stretch !important;
+          }
+        .: >
+          ha-card mushroom-shape-icon {
+            --icon-color: var(--primary-text-color)
+          }

@@ -1,4 +1,4 @@
-decluttering_templates: !include_dir_merge_named /config/lovelace/decluttering_templates
+decluttering_templates: !include_dir_merge_named /config/lovelace/templates
 
 views:
   !include_dir_list /config/lovelace/views/teste-lab

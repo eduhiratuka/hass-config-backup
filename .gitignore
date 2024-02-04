@@ -12,7 +12,7 @@ __pycache__
 lovelace-backups
 image
 tts
-www
+
 
 # Directory (contents) ignores
 .cloud
@@ -28,4 +28,10 @@ secrets.yaml
 
 # Ignore vendored stuff
 custom_components
-themes
+
+themes/*
+!themes/home-theme
+
+www/*
+!www/images
+!www/custom_resources

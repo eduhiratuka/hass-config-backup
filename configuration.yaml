@@ -1,4 +1,7 @@
 homeassistant:
     packages: !include_dir_named integrations
-    
-wake_on_lan:
+    allowlist_external_dirs:
+        - /config/automations
+        - /config/themes
+        - /config/entities
+        - /config/entities

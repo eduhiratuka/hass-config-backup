@@ -1,12 +1,13 @@
 generic_status_template2:
   default:
     # Parâmetros Principais
-    - entity: null
+    - status_entity: null
     - name: '{{ state_attr(entity, ''friendly_name'') }}'
     - action:
         action: more-info
 
     # Parâmetros do Mapeamento de Estado
+    - state_entity: config.entity
     - state_map:
       - state: 'on'
         state_friendly: 'Ligado'
@@ -27,11 +28,11 @@ generic_status_template2:
     - ghost_padding: none
   card:
     type: custom:mushroom-template-card
-    entity: '[[entity]]'
+    entity: '[[status_entity]]'
     state_map: '[[state_map]]'
-    primary: '[[name]]'
+    primary: '[[status_name]]'
     secondary: >
-      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states([[state_entity]])) | first %}
       
       {% set contents = [] %}
       {% if 'contents' in selected_state %}
@@ -55,7 +56,7 @@ generic_status_template2:
         {% endif %}
       {% endfor %}
     icon: >
-      {% set selected_state = config.state_map | selectattr('state', 'eq', states(entity)) | first %}
+      {% set selected_state = config.state_map | selectattr('state', 'eq', states([[state_entity]])) | first %}
 
       {% set icon = state_attr(entity, 'icon') %}
       {% if 'icon' in selected_state %}
@@ -64,7 +65,8 @@ generic_status_template2:
 
       {{ icon }}
     icon_color: >
-      {{ config.state_map |  selectattr('state', 'eq', states(entity)) |  map(attribute="icon_color") |  first }}
+      {{ config.state_map |  selectattr('state', 'eq', states([[state_entity]])) |  map(attribute="icon_color") |  first }}
+    layout: default
     tap_action: '[[action]]'
     card_mod:
       class: >-

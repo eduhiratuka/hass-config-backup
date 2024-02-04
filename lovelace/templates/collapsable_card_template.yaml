@@ -40,11 +40,11 @@ collapsable_card_template:
       - type: custom:decluttering-card
         template: generic_status_template2
         variables:
-          - entity: '[[main_card_entity]]'
-          - name: '[[main_card_name]]'
+          - status_entity: '[[main_card_entity]]'
+          - status_name: '[[main_card_name]]'
           - state_map: '[[state_map]]'
           - ghost_border: left
-          - extra_classes: collapsable_status collapsable_card show
+          - extra_classes: collapsable_status collapsable_card
         view_layout:
           grid-area: main_card
 
@@ -53,45 +53,17 @@ collapsable_card_template:
 # ==================================================
 # |Botão de Expandir/Colapso                       |
 # ==================================================
-      - type: custom:mushroom-template-card
-        primary: ''
-        secondary: ''
-        icon: mdi:chevron-right
-        tap_action:
-          action: toggle
-        card_mod:
-          class: ghost_card_right collapsable_card show
-          style:
-            mushroom-shape-icon$: |
-              :host {
-                --icon-border-radius: 12px
-              }
-              .shape {
-                width: 100% !important;
-              }
-            mushroom-card$: |
-              .container {
-                flex-direction: column !important;
-              }
-            mushroom-state-item$: |
-              .container {
-                flex-direction: column !important;
-                align-items: stretch !important;
-              }
-            .: >
-              ha-card mushroom-shape-icon {
-                --icon-color: var(--primary-text-color)
-              }
-
-              # ha-card ha-state-icon {
-              #   mdi:chevron-right
-              # }
-
-              # ha-card ha-state-icon {
-              #   mdi:chevron-down;
-              # }
-        view_layout:
-          grid-area: collapsable_button
+      - type: custom:decluttering-card
+        template: generic_action_template2
+        variables:
+          - action_entity: '[[main_card_entity]]'
+          - state_map:
+            - state: 'on'
+              icon: mdi:chevron-right
+            - state: 'off'
+              icon: mdi:chevron-right
+          - ghost_border: right
+          - extra_classes: collapsable_button collapsable_card
 
 
 

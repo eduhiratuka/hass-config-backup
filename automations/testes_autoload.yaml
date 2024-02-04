@@ -1,0 +1,13 @@
+id: 'testes_autoload'
+alias: "Testes: Autoload"
+description: ''
+trigger:
+  - platform: event
+    event_type: folder_watcher
+action:
+  - service: automation.reload
+  - alias: Enviar notificação pelo Telegram
+    service: telegram_bot.send_message
+    data:
+      title: 'Automação Atualizada'
+      message: "{{ trigger.event.data.folder }}"
