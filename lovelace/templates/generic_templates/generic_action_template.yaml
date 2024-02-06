@@ -23,6 +23,7 @@ generic_action_template2:
         icon_color: disabled
 
     # Parâmetros de Estilização
+    - extra_styles: null
     - extra_classes: extra_classes_none
     - ghost_border: none
     - ghost_padding: none
@@ -67,23 +68,22 @@ generic_action_template2:
         ghost_padding_[[ghost_padding]]
         [[extra_classes]]
       style:
-        mushroom-shape-icon$: |
+        mushroom-shape-icon$: >-
           :host {
             --icon-border-radius: 12px
           }
           .shape {
             width: 100% !important;
           }
-        mushroom-card$: |
+        mushroom-card$: >-
           .container {
             flex-direction: column !important;
           }
-        mushroom-state-item$: |
+        mushroom-state-item$: >-
           .container {
             flex-direction: column !important;
             align-items: stretch !important;
           }
-        .: >
-          ha-card mushroom-shape-icon {
-            --icon-color: var(--primary-text-color)
-          }
+        .: >-
+          ha-card mushroom-shape-icon { --icon-color: var(--primary-text-color) }
+          [[extra_styles]]

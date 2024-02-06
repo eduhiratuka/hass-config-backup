@@ -37,14 +37,14 @@ cards:
       - main_card_entity: light.quarto_do_edu_luz_de_cabeceira
       - main_card_name: Cabeceira
       - state_map:
-        - state: 'on'
-          state_friendly: 'Ligado'
-          icon: mdi:lamp
-          icon_color: accent
-        - state: 'off'
-          state_friendly: 'Desligado'
-          icon: mdi:lamp
-          icon_color: disabled
+          - state: 'on'
+            state_friendly: 'Ligado'
+            icon: mdi:lamp
+            icon_color: accent
+          - state: 'off'
+            state_friendly: 'Desligado'
+            icon: mdi:lamp
+            icon_color: disabled
       - collapsable_cards:
           - type: custom:decluttering-card
             template: generic_number_template2
@@ -52,11 +52,9 @@ cards:
               - number_entity: number.quarto_do_edu_luz_de_cabeceira_temperatura
               - state_entity: 'light.quarto_do_edu_luz_de_cabeceira'
               - state_map:
-                - state: 'on'
-                  icon_color: accent
-                - state: 'off'
-                  icon_color: blue
+                  - state: 'on'
+                    icon_color: accent
+                  - state: 'off'
+                    icon_color: blue
               - ghost_border: bottom
               - ghost_padding: top0
-    view_layout:
-      grid-area: welcome

@@ -1,77 +1,139 @@
-id: 'casa_notificar_atividades'
 alias: 'Casa: Notificar Atividades'
-description: ''
-trigger:
-- alias: Quando dispositivos selecionados mudarem de estado
-  id: casa_notificar_atividades_state_trigger
-  platform: state
-  entity_id: []
-  from:
-  to:
-- platform: state
-  entity_id:
-  - cover.frente_portao_da_garagem
-  from:
-  to:
-  id: casa_notificar_atividades_frente_portao_da_garagem_state_trigger
-  alias: Quando Portão da Garagem mudar de estado
-- id: casa_notificar_atividades_hass_on_trigger
-  platform: homeassistant
-  event: start
-- id: casa_notificar_atividades_hass_off_trigger
-  platform: homeassistant
-  event: shutdown
-condition: []
-action:
-- choose:
-  - conditions:
-    - condition: trigger
-      id:  
-      - casa_notificar_atividades_state_trigger
-    sequence:
-    - service: telegram_bot.send_message
-      data:
-        title: '{{ trigger.from_state.entity_id }}'
-        message: '{% from ''translator.jinja'' import format_state %} {{ format_state(trigger.from_state)
-          }} ➡️ {{ format_state(trigger.to_state) }}'
-    alias: Se dispositivos selecionados mudaram de estado, enviar notificação pelo
-      Telegram
-  - conditions:
-    - condition: trigger
-      id:
-      - casa_notificar_atividades_hass_off_trigger
-    sequence:
-    - service: telegram_bot.send_message
-      data:
-        title: '{{ "Home Assistant" }}'
-        message: '{{ "Home Assistant esta Desligando" }}'
-  - conditions:
-    - condition: trigger
-      id:
-      - casa_notificar_atividades_hass_on_trigger
-    sequence:
-    - service: telegram_bot.send_message
-      data:
-        title: '{{ "Home Assistant 123" }}'
-        message: '{{ "Home Assistant esta Ligando" }}'
-  - conditions:
-    - condition: trigger
-      id:
-      - casa_notificar_atividades_frente_portao_da_garagem_state_trigger
-      alias: Se Portão da Garagem mudou de estado
-    sequence:
-    - service: camera.record
-      target:
-        entity_id: camera.frente_camera_da_lateral
-      data:
-        duration: 10
-        filename: /config/www/records/frente_camera_da_garagem.mp4
-      alias: Gravar a Câmera da Garagem por 10seg.
-    - alias: Enviar o vídeo gravado pela Câmera da Garagem pelo Telegram
-      service: telegram_bot.send_video
-      data:
-        file: /config/www/records/frente_camera_da_garagem.mp4
-    alias: Se Portão da Garagem mudou de estado, gravar a Câmera da Garagem por
-      10seg. e enviá-lo pelo Telegram
+id: 'casa_notificar_atividades'
+description: >
+  Automação que envia informações ao Telegram quando eventos relevantes
+  acontecerem no Home Assistant
 mode: queued
 max: 10
+
+
+
+################################################################################
+# Gatilhos da Automação                                                        #
+#                                                                              #
+# Quais eventos o Home Assistant irá observar
+################################################################################
+trigger:
+
+  - alias: Quando dispositivos selecionados mudarem de estado
+    id: casa_notificar_atividades_state_trigger
+    platform: state
+    entity_id: light.quarto_do_edu_luz_de_cabeceira
+    from: null
+    to: null
+
+  - alias: Quando o Portão da Garagem mudar de estado
+    id: casa_notificar_atividades_frente_portao_da_garagem_state_trigger
+    platform: state
+    entity_id: cover.frente_portao_da_garagem
+    from: null
+    to: null
+
+  - alias: Quando o Home Assistant iniciar
+    id: casa_notificar_atividades_hass_on_trigger
+    platform: homeassistant
+    event: start
+
+  - alias: Quando o Home Assistant desligar
+    id: casa_notificar_atividades_hass_off_trigger
+    platform: homeassistant
+    event: shutdown
+
+
+
+################################################################################
+# Ações da Automação
+# 
+# 
+################################################################################
+action:
+  - alias: Escolha
+    choose:
+      - alias: >
+            Enviar mensagem ao Telegram quando dispositivos selecionados 
+            mudarem de status
+        conditions:
+            alias: Quando dispositivos selecionados mudarem de estado
+            condition: trigger
+            id: casa_notificar_atividades_state_trigger
+        sequence:
+            alias: Enviar mensagem ao Telegram
+            service: telegram_bot.send_message
+            data:
+                message: |
+                  {%- from 'translator.jinja' import format_state %}
+                  {%- set entidade = state_attr(trigger.from_state.entity_id, "friendly_name") %}
+                  {%- set from = format_state(trigger.from_state) %}
+                  {%- set to = format_state(trigger.to_state) -%}
+                  {{ entidade }}: {{ from }} ➡️ {{ to }}
+
+      - alias: >
+            Enviar mensagem ao Telegram quando o Home Assistant iniciar
+        conditions:
+            alias: Quando o Home Assistant iniciar
+            condition: trigger
+            id: casa_notificar_atividades_hass_off_trigger
+        sequence:
+            alias: Enviar mensagem ao Telegram
+            service: telegram_bot.send_message
+            data:
+                message: |
+                    {{ "Home Assistant esta Desligando" }}
+
+      - alias: >
+            Enviar mensagem ao Telegram quando o Home Assistant desligar
+        conditions:
+            alias: Quando o Home Assistant desligar
+            condition: trigger
+            id: casa_notificar_atividades_hass_on_trigger
+        sequence:
+            alias: Enviar mensagem ao Telegram 
+            service: telegram_bot.send_message
+            data:
+                message: |
+                    {{ "Home Assistant esta Ligando" }}
+
+      - alias: >
+            Gravar Câmera da Garagem por 10seg. e enviar vídeo ao Telegram 
+            quando o Portão da Garagem mudar de estado
+        conditions:
+            alias: Quando o Portão da Garagem mudar de estado
+            condition: trigger
+            id: casa_notificar_atividades_frente_portao_da_garagem_state_trigger
+        sequence:
+          - alias: Gravar Câmera da Garagem por 10seg.
+            service: camera.record
+            target:
+                entity_id: camera.frente_camera_da_garagem
+            data:
+                duration: 10
+                filename: /config/www/records/frente_camera_da_garagem.mp4
+          - alias: Enviar vídeo ao Telegram
+            service: telegram_bot.send_video
+            data:
+                file: /config/www/records/frente_camera_da_garagem.mp4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

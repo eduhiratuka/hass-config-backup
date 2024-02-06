@@ -231,11 +231,6 @@ Home Theme:
        *    none, left, center, right
        ***************************************************
       **/
-      ha-card.collapsable_card.collapsable_button.show {
-        border-bottom: 0;
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-      }
 
       ha-card.collapsable_card.collapsable_status.show {
         border-bottom: 0;

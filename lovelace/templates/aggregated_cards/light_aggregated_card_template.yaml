@@ -1,0 +1,39 @@
+light_aggregated_card_template2:
+  default:
+    - light_entity: null
+    - light_name: null
+    - layout: collapsable
+  card:
+    type: custom:layout-card
+    layout_type: custom:grid-layout
+    layout:
+      grid-template-columns: calc(100% - 66px) 66px
+      grid-template-rows: auto
+      grid-template-areas: |
+        "light-status light-controller"
+        "light-controller light-controller light-controller"
+    cards:  
+      - type: custom:decluttering-card
+        template: generic_status_template2
+        variables:
+          - status_entity: '[[light_entity]]'
+          - status_name: '[[light_name]]'
+          - action:
+              action: toggle
+          - state_entity: config.entity
+            - state_map:
+              - state: 'on'
+                state_friendly: 'Ligado'
+                contents:
+                  - state
+                icon: mdi:lamp
+                icon_color: primary
+              - state: 'off'
+                state_friendly: 'Desligado'
+                contents:
+                  - state
+                icon: mdi:lamp-outline
+                icon_color: disabled
+          - ghost_border: top_left
+        view_layout:
+          grid-area: light-status

@@ -28,8 +28,8 @@ collapsable_card_template:
       grid-template-columns: calc(100% - 66px) 66px
       grid-template-rows: auto
       grid-template-areas: |
-        "main_card collapsable_button"
-        "collapsable_container collapsable_container"
+        'collapsable_status collapsable_button'
+        'collapsable_container collapsable_container'
     cards: 
 
 
@@ -44,9 +44,9 @@ collapsable_card_template:
           - status_name: '[[main_card_name]]'
           - state_map: '[[state_map]]'
           - ghost_border: left
-          - extra_classes: collapsable_status collapsable_card show
+          - extra_classes: collapsable_status collapsable_card
         view_layout:
-          grid-area: main_card
+          grid-area: collapsable_status
 
 
 
@@ -57,13 +57,35 @@ collapsable_card_template:
         template: generic_action_template2
         variables:
           - action_entity: '[[main_card_entity]]'
+          - action:
+              action: fire-dom-event
+              browser_mod:
+                service: browser_mod.javascript
+                data:
+                  code: >
+                    const container = document.querySelector('body > home-assistant').shadowRoot.querySelector('home-assistant-main').shadowRoot.querySelector('ha-drawer > partial-panel-resolver > ha-panel-lovelace').shadowRoot.querySelector('hui-root').shadowRoot.querySelector('#view > hui-view > grid-layout').shadowRoot.querySelector('#root > decluttering-card:nth-child(1)').shadowRoot.querySelector('#declutter-child').shadowRoot.querySelector('grid-layout');
+                    const container = document.querySelector('body > home-assistant').shadowRoot.querySelector('home-assistant-main').shadowRoot.querySelector('ha-drawer > partial-panel-resolver > ha-panel-lovelace').shadowRoot.querySelector('hui-root').shadowRoot.querySelector('#view > hui-view > grid-layout').shadowRoot.querySelector('#root > decluttering-card:nth-child(2)').shadowRoot.querySelector('#declutter-child').shadowRoot.querySelector('grid-layout');
+
+                    const collapsable_status = container.shadowRoot.querySelector('#root > decluttering-card:nth-child(1)').shadowRoot.querySelector('#declutter-child').shadowRoot.querySelector('ha-card');
+                    const collapsable_button = container.shadowRoot.querySelector('#root > decluttering-card:nth-child(2)').shadowRoot.querySelector('#declutter-child').shadowRoot.querySelector('ha-card');
+                    const collapsable_container = container.shadowRoot.querySelector('#root > mod-card').shadowRoot.querySelector('ha-card');
+
+                    collapsable_status.classList.toggle('show');
+                    collapsable_button.classList.toggle('show');
+                    collapsable_container.classList.toggle('show');
           - state_map:
             - state: 'on'
               icon: mdi:chevron-right
             - state: 'off'
               icon: mdi:chevron-right
+          - extra_styles: >-
+              ha-card.collapsable_card.collapsable_button ha-state-icon { transform: rotate(0); transition: all .2s ease-in-out; }
+              ha-card.collapsable_card.collapsable_button.show ha-state-icon { transform: rotate(90deg); }
+              ha-card.collapsable_card.collapsable_button.show { border-bottom: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
           - ghost_border: right
-          - extra_classes: collapsable_button collapsable_card show
+          - extra_classes: collapsable_button collapsable_card
+        view_layout:
+          grid-area: collapsable_button
 
 
 
